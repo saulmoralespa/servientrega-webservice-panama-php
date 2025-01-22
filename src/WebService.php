@@ -19,9 +19,9 @@ class WebService
 {
     const URL_QUOTE = 'https://ws-servientrega.appsiscore.com/cotizador/ws_cotizador.php';
 
-    const SANDBOX_URL_GUIDES = 'https://ws-servientrega.appsiscore.com/test/generar_guia.php?wsdl';
+    const SANDBOX_URL_BASE_GUIDES = 'https://ws-servientrega.appsiscore.com/test/';
 
-    const URL_GUIDES = 'https://ws-servientrega.appsiscore.com/generar_guia_carta.php?wsdl';
+    const URL_BASE_GUIDES = 'https://ws-servientrega.appsiscore.com/';
 
     const URL_TRACKING_DISPATCHES = 'https://ws-servientrega.appsiscore.com/server_wst.php?wsdl';
 
@@ -43,7 +43,7 @@ class WebService
     }
 
 
-    public function sandboxMode($status = false): static
+    public function sandboxMode($status = true): static
     {
         if ($status) {
             self::$sandbox = true;
@@ -54,9 +54,9 @@ class WebService
     public static function getUrlGuides(): string
     {
         if (self::$sandbox) {
-            return self::SANDBOX_URL_GUIDES;
+            return self::SANDBOX_URL_BASE_GUIDES;
         }
-        return self::URL_GUIDES;
+        return self::URL_BASE_GUIDES;
     }
 
     /**
@@ -103,9 +103,10 @@ class WebService
      * @return \$1|false|\SimpleXMLElement
      * @throws Exception
      */
-    public function generarGuia(array $params)
+    public function generarGuia(array $params, $printIsCarta = true)
     {
         $endpoint = self::getUrlGuides();
+        $endpoint .= $printIsCarta ? "generar_guia_carta.php?wsdl" : "generar_guia.php?wsdl";
         return $this->callSoap($params, $endpoint);
     }
 
